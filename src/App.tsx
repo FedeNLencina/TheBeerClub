@@ -1,10 +1,57 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
-
+import { collection, addDoc } from "firebase/firestore"; 
+import { db } from './firebase';
+import { getDatabase, ref, set,child, get } from "firebase/database";
 function App() {
   const [count, setCount] = useState(0)
+
+const readData = (userId:string) => {
+    console.log("ADAS")
+
+const dbRef = ref(getDatabase());
+  get(child(dbRef, `users/${userId}`)).then((snapshot) => {
+  if (snapshot.exists()) {
+    console.log(snapshot.val());
+  } else {
+    console.log("No data available");
+  }
+}).catch((error) => {
+  console.error(error);
+});
+
+useEffect(()=>{
+  
+readData("1")
+
+},[])
+  
+}
+  
+
+function writeUserData(userId: string, name: any, email: any, imageUrl: any) {
+  const db = getDatabase();
+  set(ref(db, 'users/' + userId), {
+    username: name,
+    email: email,
+    profile_picture : imageUrl
+  });
+}
+
+const test = async () =>{
+try {
+  const docRef = await addDoc(collection(db, "users"), {
+    first: "Ada",
+    last: "Lovelace",
+    born: 1815
+  });
+  console.log("Document written with ID: ", docRef.id);
+} catch (e) {
+  console.error("Error adding document: ", e);
+}
+}
 
   return (
     <>
@@ -18,8 +65,11 @@ function App() {
       </div>
       <h1>Vite + React</h1>
       <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
+        <button onClick={() => writeUserData("1","Fede","sddsds","asassa")}>
+          createUser
+        </button>
+        <button onClick={() => writeUserData("1","Fede","sddsds","asassa")}>
+          readUser
         </button>
         <p>
           Edit <code>src/App.tsx</code> and save to test HMR
