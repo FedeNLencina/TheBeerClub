@@ -72,7 +72,7 @@ function App() {
         <h1>cargando</h1>
       }
 
-      <h1>{count}</h1>
+      <h1>{count.username}</h1>
       <div className="card">
         <button onClick={() => writeUserData("1", "asaaaad", "sddsds", "asassa")}>
           createUser
