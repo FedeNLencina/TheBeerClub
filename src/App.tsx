@@ -1,14 +1,18 @@
-import { useEffect, useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-floating-promises */
+import { useEffect, useState } from "react";
+import reactLogo from "./assets/react.svg";
+import viteLogo from "/vite.svg";
+import "./App.css";
 import { collection, addDoc } from "firebase/firestore";
-import { db } from './firebase';
+import { db } from "./firebase";
 import { getDatabase, ref, set, child, get } from "firebase/database";
-import { Navbar } from './components/navBar/Navbar';
+import { Navbar } from "./components/navBar/Navbar";
+import Navbar2 from "./components/navBar/Navbar2";
 function App() {
   const [count, setCount] = useState(0);
-  const [load, setload] = useState(false)
+  const [load, setload] = useState(false);
 
   const readData = (userId: string) => {
     console.log("ADAS");
@@ -18,7 +22,7 @@ function App() {
       .then((snapshot) => {
         if (snapshot.exists()) {
           console.log(snapshot.val());
-          setCount(snapshot.val())
+          setCount(snapshot.val());
         } else {
           console.log("No data available");
         }
@@ -26,7 +30,6 @@ function App() {
       .catch((error) => {
         console.error(error);
       });
-
   };
 
   useEffect(() => {
@@ -34,14 +37,14 @@ function App() {
   }, [load]);
 
   function writeUserData(userId: string, name: any, email: any, imageUrl: any) {
-    setload(true)
+    setload(true);
     const db = getDatabase();
     set(ref(db, "users/" + userId), {
       username: name,
       email: email,
       profile_picture: imageUrl,
     });
-    setload(false)
+    setload(false);
   }
 
   const test = async () => {
@@ -61,6 +64,7 @@ function App() {
     <>
       <div>
         <Navbar />
+        <Navbar2 />
         <a href="https://vitejs.dev" target="_blank">
           <img src={viteLogo} className="logo" alt="Vite logo" />
         </a>
@@ -68,13 +72,13 @@ function App() {
           <img src={reactLogo} className="logo react" alt="React logo" />
         </a>
       </div>
-      {load &&
-        <h1>cargando</h1>
-      }
+      {load && <h1>cargando</h1>}
 
       <h1>{count.username}</h1>
       <div className="card">
-        <button onClick={() => writeUserData("1", "asaaaad", "sddsds", "asassa")}>
+        <button
+          onClick={() => writeUserData("1", "asaaaad", "sddsds", "asassa")}
+        >
           createUser
         </button>
         <p>
