@@ -2,20 +2,18 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-floating-promises */
 import { useEffect, useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
 import "./App.css";
 import { collection, addDoc } from "firebase/firestore";
 import { db } from "./firebase";
 import { getDatabase, ref, set, child, get } from "firebase/database";
 import { Navbar } from "./components/navBar/Navbar";
-import Navbar2 from "./components/navBar/Navbar2";
+import { TableListContainer } from "./components/containers/tableListContainer/TableListContainer";
 function App() {
   const [count, setCount] = useState(0);
   const [load, setload] = useState(false);
 
   const readData = (userId: string) => {
-    console.log("ADAS");
+    // console.log("ADAS");
 
     const dbRef = ref(getDatabase());
     get(child(dbRef, `users/${userId}`))
@@ -64,30 +62,15 @@ function App() {
     <>
       <div>
         <Navbar />
-        <Navbar2 />
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
       </div>
       {load && <h1>cargando</h1>}
 
       <h1>{count.username}</h1>
-      <div className="card">
-        <button
-          onClick={() => writeUserData("1", "asaaaad", "sddsds", "asassa")}
-        >
-          createUser
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+
+      <button onClick={() => writeUserData("1", "asaaaad", "sddsds", "asassa")}>
+        createUser
+      </button>
+      <TableListContainer />
     </>
   );
 }
