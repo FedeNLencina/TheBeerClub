@@ -1,4 +1,4 @@
-import { Food, Order } from '../utils/tables/tables';
+import { Food, Order } from "../utils/tables/tables";
 
 const comida1: Food = {
   name: "Fernet",
@@ -25,4 +25,6 @@ const comida6: Food = {
   price: 1000,
 };
 
-export const OrderList = [comida1, comida2, comida3, comida4, comida5, comida6];
+const list = [comida1, comida2, comida3, comida4, comida5, comida6];
+
+export const order: Order = { foodList: list };
