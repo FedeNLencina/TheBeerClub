@@ -1,4 +1,4 @@
-import { Food, Order } from "../utils/tables/tables";
+import { Food, Order } from "../utils/interfaces/tables/tables";
 
 const comida1: Food = {
   name: "Fernet",

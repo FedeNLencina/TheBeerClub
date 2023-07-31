@@ -1,9 +1,9 @@
-import { Table } from "../utils/tables/tables";
+import { Table } from "../utils/interfaces/tables/tables";
 import { order } from "./orderList";
 
 const table1: Table = {
   id: 1,
-  open: false,
+  open: true,
   order: order,
 };
 const table2: Table = {
@@ -13,7 +13,7 @@ const table2: Table = {
 };
 const table3: Table = {
   id: 3,
-  open: false,
+  open: true,
   order: order,
 };
 const table4: Table = {

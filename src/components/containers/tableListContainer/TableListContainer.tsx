@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { list } from "../../../servicies/tableList";
-import { Table } from "../../../utils/tables/tables";
+import { Table } from "../../../utils/interfaces/tables/tables";
 import { TableList } from "../../lists/tableList/TableList";
 
 export const TableListContainer = () => {
