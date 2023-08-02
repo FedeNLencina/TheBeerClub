@@ -8,6 +8,9 @@ import { db } from "./firebase";
 import { getDatabase, ref, set, child, get } from "firebase/database";
 import { Navbar } from "./components/navBar/Navbar";
 import { TableListContainer } from "./components/containers/tableListContainer/TableListContainer";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Hero } from "./components/hero/Hero";
+
 function App() {
   const [count, setCount] = useState(0);
   const [load, setload] = useState(false);
@@ -60,17 +63,22 @@ function App() {
 
   return (
     <>
-      <div>
+      <BrowserRouter>
         <Navbar />
-      </div>
-      {load && <h1>cargando</h1>}
+        {load && <h1>cargando</h1>}
 
-      <h1>{count.username}</h1>
+        <h1>{count.username}</h1>
 
-      <button onClick={() => writeUserData("1", "asaaaad", "sddsds", "asassa")}>
-        createUser
-      </button>
-      <TableListContainer />
+        <button
+          onClick={() => writeUserData("1", "asaaaad", "sddsds", "asassa")}
+        >
+          createUser
+        </button>
+        <Routes>
+          <Route path="/" element={<Hero />} />
+          <Route path="/tables" element={<TableListContainer />} />
+        </Routes>
+      </BrowserRouter>
     </>
   );
 }
