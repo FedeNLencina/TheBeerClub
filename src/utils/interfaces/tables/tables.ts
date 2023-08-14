@@ -10,5 +10,5 @@ export type Order = {
 export interface Table {
   id: number;
   open: boolean;
-  order: Order;
+  order: [];
 }

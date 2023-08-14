@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/restrict-plus-operands */
 /* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
@@ -7,7 +8,8 @@ import React from "react";
 import { useEffect, useState } from "react";
 import { collection, addDoc } from "firebase/firestore";
 import { db } from "../../firebase";
-import { getDatabase, ref, set, child, get } from "firebase/database";
+import { getDatabase, ref, set, child, get, push } from "firebase/database";
+import { Table } from "../../utils/interfaces/tables/tables";
 
 export const Hero = () => {
   const [count, setCount] = useState(0);
@@ -46,6 +48,44 @@ export const Hero = () => {
     setload(false);
   }
 
+  function addTables(amount: number, lastTableId: number){
+     setload(true);
+    const db = getDatabase();
+    // referencio a la lista en la base de datos
+    const postListRef = ref(db, 'tablesMock');
+    //agrego un nuevo elementos a esa lista (lo referencio asi al elemento y en el set le agrego las props.)
+    const newTableRef = push(postListRef);
+    let nextId = lastTableId + 1;
+    for (let i=0; i<amount; i++){
+      const newTable:Table = {id: nextId, open:true, order:[]}
+      set(newTableRef, {
+      ocupped: newTable.open,
+      order:newTable.order,
+    }
+    );
+    nextId++;
+    console.log("id: ", nextId)
+    console.log("table onChildAdded :",newTable)
+    }
+    
+    setload(false);
+  }
+
+  function addTable(table: Table){
+    setload(true);
+    const db = getDatabase();
+    // referencio a la lista en la base de datos
+    const postListRef = ref(db, 'tablesMock');
+    //agrego un nuevo elementos a esa lista (lo referencio asi al elemento y en el set le agrego las props.)
+    const newTableRef = push(postListRef);
+    set(newTableRef, {
+      ocupped: table.open,
+      order:table.order,
+    });
+    setload(false);
+  }
+  
+
   const test = async () => {
     try {
       const docRef = await addDoc(collection(db, "users"), {
@@ -66,7 +106,7 @@ export const Hero = () => {
         <h1>{count.username}</h1>
 
         <button
-          onClick={() => writeUserData("1", "asaaaad", "sddsds", "asassa")}
+          onClick={() => addTables(2, 1)}
         >
           createUser
         </button>
