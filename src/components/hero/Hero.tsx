@@ -48,44 +48,6 @@ export const Hero = () => {
     setload(false);
   }
 
-  function addTables(amount: number, lastTableId: number){
-     setload(true);
-    const db = getDatabase();
-    // referencio a la lista en la base de datos
-    const postListRef = ref(db, 'tablesMock');
-    //agrego un nuevo elementos a esa lista (lo referencio asi al elemento y en el set le agrego las props.)
-    const newTableRef = push(postListRef);
-    let nextId = lastTableId + 1;
-    for (let i=0; i<amount; i++){
-      const newTable:Table = {id: nextId, open:true, order:[]}
-      set(newTableRef, {
-      ocupped: newTable.open,
-      order:newTable.order,
-    }
-    );
-    nextId++;
-    console.log("id: ", nextId)
-    console.log("table onChildAdded :",newTable)
-    }
-    
-    setload(false);
-  }
-
-  function addTable(table: Table){
-    setload(true);
-    const db = getDatabase();
-    // referencio a la lista en la base de datos
-    const postListRef = ref(db, 'tablesMock');
-    //agrego un nuevo elementos a esa lista (lo referencio asi al elemento y en el set le agrego las props.)
-    const newTableRef = push(postListRef);
-    set(newTableRef, {
-      ocupped: table.open,
-      order:table.order,
-    });
-    setload(false);
-  }
-  
-
   const test = async () => {
     try {
       const docRef = await addDoc(collection(db, "users"), {
@@ -105,11 +67,7 @@ export const Hero = () => {
 
         <h1>{count.username}</h1>
 
-        <button
-          onClick={() => addTables(2, 1)}
-        >
-          createUser
-        </button>
+        {/* <button onClick={() => addTables(2, 1)}>createUser</button> */}
       </div>
     </div>
   );
