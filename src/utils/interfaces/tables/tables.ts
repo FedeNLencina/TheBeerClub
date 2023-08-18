@@ -10,5 +10,8 @@ export type Order = {
 export interface Table {
   id: number;
   open: boolean;
-  order: [];
+  //order: any[];
 }
+
+
+//Orders van a ser otra lista aparte y se le suma a una mesa cuando se abra

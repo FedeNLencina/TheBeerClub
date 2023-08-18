@@ -11,7 +11,7 @@ interface TableProps {
 
 export const TableComponent = ({ table, iconUrl }: TableProps) => {
   const [modalOpen, setModalOpen] = useState(false);
-  console.log("Table state: ", table?.open);
+  //console.log("Table state: ", table?.open);
 
   const openModal = () => {
     setModalOpen(true);
