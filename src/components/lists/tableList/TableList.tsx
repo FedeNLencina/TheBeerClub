@@ -15,20 +15,15 @@ interface TableListProps {
 
 export const TableList = ({ listOfTables }: TableListProps) => {
   const [load, setload] = useState(false);
-
-  // console.log(
-  //   "list of tables as porps ijn table list compoennt: ",
-  //   listOfTables
-  // );
   return (
     <div className="flex flex-row justify-start items-center">
       <div className="grid grid-cols-12 gap-4">
         {listOfTables &&
-          listOfTables.map((table) => {
+          listOfTables.map((object) => {
             return (
               <TableComponent
-                key={table.id}
-                table={table}
+                key={object.id}
+                table={object}
                 iconUrl={tableIcon}
               />
             );
