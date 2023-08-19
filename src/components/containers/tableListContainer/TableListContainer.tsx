@@ -23,8 +23,6 @@ export const TableListContainer = () => {
   const [load, setLoad] = useState(false);
   const [lastTableID, setLastTableID] = useState(0);
   const [tablesAmount, setTablesAmount] = useState(0);
-  const [lastTableAdded, setLastTableAdded] = useState<Table>();
-  const db = getDatabase();
 
   const getTableList = async () => {
     try {
@@ -71,26 +69,31 @@ export const TableListContainer = () => {
         id: newTable.id,
         ocupped: newTable.open,
       });
+      console.log("al estar vacia la lista entro aca: ", newTable);
+      console.log("newTable: ", newTable);
+      console.log("newTable id: ", newTable.id);
       setTablesAmount(tablesAmount + 1);
     } else {
       let amountTablesAdded = 0;
       const lastTable = numberOfTables - 1;
-      console.log("last table: ", lastTable);
+      //console.log("last table: ", lastTable);
       const lastId = tableList[lastTable].id;
-      console.log("lastid: ", lastId);
+      //console.log("lastid: ", lastId);
       let nextId = lastId + 1;
-      console.log("nextId: ", nextId);
+      //console.log("nextId: ", nextId);
       for (let i = 0; i < amount; i++) {
         const newTable: Table = { id: nextId, open: true };
         set(newTableRef, {
           id: newTable.id,
           ocupped: newTable.open,
         });
+        console.log("al NO estar vacia la lista entro aca: ", newTable);
+        console.log("newTable: ", newTable);
+        console.log("newTable id: ", newTable.id);
         nextId++;
         amountTablesAdded++;
         setTablesAmount(tablesAmount + numberOfTables + amountTablesAdded);
-        setLastTableAdded(newTable);
-        console.log("nextId after a loop: ", nextId);
+        //console.log("nextId after a loop: ", nextId);
       }
     }
   }
@@ -116,7 +119,6 @@ export const TableListContainer = () => {
 
   useEffect(() => {
     getTableList();
-    console.log("tables", tables);
   }, []);
 
   return (
