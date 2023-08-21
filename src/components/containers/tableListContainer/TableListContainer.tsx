@@ -30,23 +30,30 @@ export const TableListContainer = () => {
       const db = await getDatabase();
       const tableListRef = await ref(db, "tablesMock");
       const newList: Table[] = [...tables];
-      //console.log("new list: ", newList);
       onValue(tableListRef, (snapshot) => {
+        console.log("entro en el onValue");
         snapshot.forEach((childSnapshot) => {
+          console.log("entro en for each: ");
+          const childKey = childSnapshot.key;
           const childData: Table = childSnapshot.val();
+          console.log("childata: ", childData);
+          console.log("childata: ", childKey);
           if (childData) {
             const elementId: number = childData.id;
-            //console.log("elementId: ", elementId);
             const isOcupped: boolean = childData.ocupped;
-            //console.log("isOcupped: ", isOcupped);
+            console.log("entra a crear la mesa? ");
             const newTable: Table = {
               id: elementId,
-              open: isOcupped,
+              ocupped: isOcupped,
             };
-            newList.push(newTable);
-            setTables([...newList]);
-            console.log("tables: ", tables);
-            // console.log("new list: ", newList);
+            console.log("crea la mesa :", newTable);
+            const idExist = checkIdAlreadyExists(tables, newTable, elementId);
+            if (!idExist) {
+              newList.push(newTable);
+              console.log("new list: ", newList);
+              setTables([...newList]);
+              console.log("tables: ", tables);
+            }
           }
         });
       });
@@ -54,6 +61,28 @@ export const TableListContainer = () => {
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const checkIdAlreadyExists = (
+    tableList: Table[],
+    table: Table,
+    id: number
+  ): boolean => {
+    const tableExist = tableExits(tableList, table);
+    if (tableExist) {
+      console.log("entra en if de table exiists");
+      console.log("tableExist? ", tableExist);
+      const tableId = table.id;
+      if (tableId === id) {
+        console.log("returna true ya que ese id esta dentro");
+        return true;
+      }
+    }
+    return false;
+  };
+
+  const tableExits = (tableList: Table[], table: Table): boolean => {
+    return tableList.includes(table);
   };
 
   function addTables(amount: number, tableList: Table[]) {
@@ -64,10 +93,10 @@ export const TableListContainer = () => {
     const newTableRef = push(postListRef);
     const numberOfTables = tableList.length;
     if (numberOfTables <= 0) {
-      const newTable: Table = { id: 1, open: true };
+      const newTable: Table = { id: 1, ocupped: true };
       set(newTableRef, {
         id: newTable.id,
-        ocupped: newTable.open,
+        ocupped: newTable.ocupped,
       });
       console.log("al estar vacia la lista entro aca: ", newTable);
       console.log("newTable: ", newTable);
@@ -82,10 +111,10 @@ export const TableListContainer = () => {
       let nextId = lastId + 1;
       //console.log("nextId: ", nextId);
       for (let i = 0; i < amount; i++) {
-        const newTable: Table = { id: nextId, open: true };
+        const newTable: Table = { id: nextId, ocupped: true };
         set(newTableRef, {
           id: newTable.id,
-          ocupped: newTable.open,
+          ocupped: newTable.ocupped,
         });
         console.log("al NO estar vacia la lista entro aca: ", newTable);
         console.log("newTable: ", newTable);
@@ -96,28 +125,29 @@ export const TableListContainer = () => {
         //console.log("nextId after a loop: ", nextId);
       }
     }
-  }
 
-  function addTable(table: Table) {
-    setLoad(true);
-    const db = getDatabase();
-    // referencio a la lista en la base de datos
-    const postListRef = ref(db, "tablesMock");
-    //agrego un nuevo elementos a esa lista (lo referencio asi al elemento y en el set le agrego las props.)
-    const newTableRef = push(postListRef);
-    set(newTableRef, {
-      ocupped: table.open,
-    })
-      .then(() => {
-        console.log("Elemento agregado con éxito a la lista.");
+    function addTable(table: Table) {
+      setLoad(true);
+      const db = getDatabase();
+      // referencio a la lista en la base de datos
+      const postListRef = ref(db, "tablesMock");
+      //agrego un nuevo elementos a esa lista (lo referencio asi al elemento y en el set le agrego las props.)
+      const newTableRef = push(postListRef);
+      set(newTableRef, {
+        ocupped: table.open,
       })
-      .catch((error) => {
-        console.error("Error al agregar el elemento a la lista:", error);
-      });
-    setLoad(false);
+        .then(() => {
+          console.log("Elemento agregado con éxito a la lista.");
+        })
+        .catch((error) => {
+          console.error("Error al agregar el elemento a la lista:", error);
+        });
+      setLoad(false);
+    }
   }
 
   useEffect(() => {
+    console.log("entra en el useefftec");
     getTableList();
   }, []);
 

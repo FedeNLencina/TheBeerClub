@@ -9,7 +9,7 @@ export type Order = {
 
 export interface Table {
   id: number;
-  open: boolean;
+  ocupped: boolean;
   //order: any[];
 }
 

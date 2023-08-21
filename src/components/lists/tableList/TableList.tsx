@@ -15,15 +15,17 @@ interface TableListProps {
 
 export const TableList = ({ listOfTables }: TableListProps) => {
   const [load, setload] = useState(false);
+  console.log("LIST OF TABLES PASSED BY PARAMETER: ", listOfTables);
   return (
     <div className="flex flex-row justify-start items-center">
       <div className="grid grid-cols-12 gap-4">
         {listOfTables &&
-          listOfTables.map((object) => {
+          listOfTables.map((table) => {
+            console.log("table id in table list: ", table.id);
             return (
               <TableComponent
-                key={object.id}
-                table={object}
+                key={table.id}
+                table={table}
                 iconUrl={tableIcon}
               />
             );

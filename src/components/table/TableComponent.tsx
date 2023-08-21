@@ -28,7 +28,7 @@ export const TableComponent = ({ table, iconUrl }: TableProps) => {
           <button onClick={openModal}>
             <img src={iconUrl} alt="mesa" />
           </button>
-          {table?.open ? (
+          {table?.ocupped ? (
             <img
               className="w-1/4 absolute right-0 top-0"
               src={greenCircle}
