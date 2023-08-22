@@ -20,6 +20,7 @@ import {
 export const TableListContainer = () => {
   //const [tableList, setTableList] = useState<Array<Table>>(list);
   const [tables, setTables] = useState<Array<Table>>([]);
+  const [databaseKeys, setDatabaseKeys] = useState<Array<string>>([]);
   const [load, setLoad] = useState(false);
   const [lastTableID, setLastTableID] = useState(0);
   const [tablesAmount, setTablesAmount] = useState(0);
@@ -37,7 +38,7 @@ export const TableListContainer = () => {
           const childKey = childSnapshot.key;
           const childData: Table = childSnapshot.val();
           console.log("childata: ", childData);
-          console.log("childata: ", childKey);
+          console.log("child key: ", childKey);
           if (childData) {
             const elementId: number = childData.id;
             const isOcupped: boolean = childData.ocupped;
@@ -47,12 +48,16 @@ export const TableListContainer = () => {
               ocupped: isOcupped,
             };
             console.log("crea la mesa :", newTable);
-            const idExist = checkIdAlreadyExists(tables, newTable, elementId);
-            if (!idExist) {
-              newList.push(newTable);
-              console.log("new list: ", newList);
-              setTables([...newList]);
-              console.log("tables: ", tables);
+            if (childKey) {
+              const idExist = keyExits(databaseKeys, childKey);
+              if (!idExist) {
+                setDatabaseKeys([...databaseKeys, childKey]);
+                console.log("database keys :", databaseKeys);
+                newList.push(newTable);
+                console.log("new list: ", newList);
+                setTables([...newList]);
+                console.log("tables: ", tables);
+              }
             }
           }
         });
@@ -63,26 +68,26 @@ export const TableListContainer = () => {
     }
   };
 
-  const checkIdAlreadyExists = (
-    tableList: Table[],
-    table: Table,
-    id: number
-  ): boolean => {
-    const tableExist = tableExits(tableList, table);
-    if (tableExist) {
-      console.log("entra en if de table exiists");
-      console.log("tableExist? ", tableExist);
-      const tableId = table.id;
-      if (tableId === id) {
-        console.log("returna true ya que ese id esta dentro");
-        return true;
-      }
-    }
-    return false;
-  };
+  // const checkIdAlreadyExists = (
+  //   keyList: string[],
+  //   key: string,
+  //   id: number
+  // ): boolean => {
+  //   const tableExist = keyExits(keyList, key);
+  //   if (tableExist) {
+  //     console.log("entra en if de table exiists");
+  //     console.log("tableExist? ", tableExist);
+  //     const tableId = key.id;
+  //     if (tableId === id) {
+  //       console.log("returna true ya que ese id esta dentro");
+  //       return true;
+  //     }
+  //   }
+  //   return false;
+  // };
 
-  const tableExits = (tableList: Table[], table: Table): boolean => {
-    return tableList.includes(table);
+  const keyExits = (idList: string[], key: string): boolean => {
+    return idList.includes(key);
   };
 
   function addTables(amount: number, tableList: Table[]) {
