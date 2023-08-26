@@ -15,7 +15,7 @@ interface TableListProps {
 
 export const TableList = ({ listOfTables }: TableListProps) => {
   const [load, setload] = useState(false);
-  console.log("LIST OF TABLES PASSED BY PARAMETER: ", listOfTables);
+  //console.log("LIST OF TABLES PASSED BY PARAMETER: ", listOfTables);
   return (
     <div className="flex flex-row justify-start items-center">
       <div className="grid grid-cols-12 gap-4">

@@ -21,17 +21,19 @@ export const TableListContainer = () => {
   //const [tableList, setTableList] = useState<Array<Table>>(list);
   const [tables, setTables] = useState<Array<Table>>([]);
   const [databaseKeys, setDatabaseKeys] = useState<Array<string>>([]);
+  const [tableIds, setTableIds] = useState<Array<number>>([]);
   const [load, setLoad] = useState(false);
   const [tablesAmount, setTablesAmount] = useState(0);
 
   const getTableList = async () => {
     setLoad(true);
+    const newTableList: Table[] = [];
+    const newIdList: number[] = [];
     try {
       const db = await getDatabase();
 
       if (db) {
         const tableListRef = await ref(db, "tablesMock");
-        const newList: Table[] = [...tables];
         if (!tableListRef) {
           setTablesAmount(0);
           setLoad(false);
@@ -42,29 +44,18 @@ export const TableListContainer = () => {
               snapshot.forEach((childSnapshot) => {
                 const childKey = childSnapshot.key;
                 const childData: Table = childSnapshot.val();
-                console.log("childata: ", childData);
-                console.log("child key: ", childKey);
-                if (childKey) {
-                  console.log("detecto que hay childKey ");
-                  const elementId: number = childData.id;
-                  const isOcupped: boolean = childData.ocupped;
-                  const idExist = keyExits(databaseKeys, childKey);
-                  console.log("id exist?:  ", idExist);
-                  console.log("keydatabaselis: ", databaseKeys);
-                  if (!idExist) {
-                    console.log("entra a crear la mesa? ");
-                    const newTable: Table = {
-                      id: elementId,
-                      ocupped: isOcupped,
-                    };
-                    console.log("crea la mesa :", newTable);
-                    console.log("entro porque no existe");
+                if (childKey && childData) {
+                  const keyIdExist = keyExits(databaseKeys, childKey);
+                  if (!keyIdExist) {
                     setDatabaseKeys([...databaseKeys, childKey]);
-                    console.log("database keys :", databaseKeys);
-                    newList.push(newTable);
-                    console.log("new list: ", newList);
-                    setTables([...newList]);
-                    console.log("tables: ", tables);
+                    const newTable: Table = childData;
+                    const tableExists = tableIdExists(tableIds, newTable.id);
+                    if (!tableExists) {
+                      newTableList.push(newTable);
+                      newIdList.push(newTable.id);
+                      setTableIds([...newIdList]);
+                      setTables([...newTableList]);
+                    }
                   }
                 }
               });
@@ -86,6 +77,10 @@ export const TableListContainer = () => {
     return idList.includes(key);
   };
 
+  const tableIdExists = (tableList: number[], id: number): boolean => {
+    return tableList.includes(id);
+  };
+
   const addTables = (amount: number, tableList: Table[]) => {
     const db = getDatabase();
     // referencio a la lista en la base de datos
@@ -99,6 +94,8 @@ export const TableListContainer = () => {
         id: newTable.id,
         ocupped: newTable.ocupped,
       });
+      setTableIds([...tableIds, newTable.id]);
+      setTables([...tables, newTable]);
       console.log("al estar vacia la lista entro aca: ", newTable);
       console.log("newTable: ", newTable);
       console.log("newTable id: ", newTable.id);
@@ -124,6 +121,8 @@ export const TableListContainer = () => {
         amountTablesAdded++;
         console.log("amountTablesAdded: ", amountTablesAdded);
         setTablesAmount(tablesAmount + amountTablesAdded);
+        setTableIds([...tableIds, newTable.id]);
+        setTables([...tables, newTable]);
         //console.log("nextId after a loop: ", nextId);
       }
     }
@@ -131,7 +130,8 @@ export const TableListContainer = () => {
 
   useEffect(() => {
     getTableList();
-  }, [load, tablesAmount]);
+  }, [load]);
+  console.log("tableIds: ", tableIds);
   console.log("tables: ", tables);
 
   return (
