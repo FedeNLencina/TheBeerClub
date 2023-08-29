@@ -20,18 +20,14 @@ import {
 export const TableListContainer = () => {
   //const [tableList, setTableList] = useState<Array<Table>>(list);
   const [tables, setTables] = useState<Array<Table>>([]);
-  const [databaseKeys, setDatabaseKeys] = useState<Array<string>>([]);
-  const [tableIds, setTableIds] = useState<Array<number>>([]);
   const [load, setLoad] = useState(false);
   const [tablesAmount, setTablesAmount] = useState(0);
 
   const getTableList = async () => {
     setLoad(true);
     const newTableList: Table[] = [];
-    const newIdList: number[] = [];
     try {
       const db = await getDatabase();
-
       if (db) {
         const tableListRef = await ref(db, "tablesMock");
         if (!tableListRef) {
@@ -42,22 +38,10 @@ export const TableListContainer = () => {
             tableListRef,
             (snapshot) => {
               snapshot.forEach((childSnapshot) => {
-                const childKey = childSnapshot.key;
                 const childData: Table = childSnapshot.val();
-                if (childKey && childData) {
-                  const keyIdExist = keyExits(databaseKeys, childKey);
-                  if (!keyIdExist) {
-                    setDatabaseKeys([...databaseKeys, childKey]);
-                    const newTable: Table = childData;
-                    const tableExists = tableIdExists(tableIds, newTable.id);
-                    if (!tableExists) {
-                      newTableList.push(newTable);
-                      newIdList.push(newTable.id);
-                      setTableIds([...newIdList]);
-                      setTables([...newTableList]);
-                    }
-                  }
-                }
+                const newTable: Table = childData;
+                newTableList.push(newTable);
+                setTables([...newTableList]);
               });
             },
             {
@@ -66,19 +50,10 @@ export const TableListContainer = () => {
           );
         }
       }
-
       setLoad(false);
     } catch (error) {
       console.log(error);
     }
-  };
-
-  const keyExits = (idList: string[], key: string): boolean => {
-    return idList.includes(key);
-  };
-
-  const tableIdExists = (tableList: number[], id: number): boolean => {
-    return tableList.includes(id);
   };
 
   const addTables = (amount: number, tableList: Table[]) => {
@@ -94,45 +69,30 @@ export const TableListContainer = () => {
         id: newTable.id,
         ocupped: newTable.ocupped,
       });
-      setTableIds([...tableIds, newTable.id]);
       setTables([...tables, newTable]);
-      console.log("al estar vacia la lista entro aca: ", newTable);
-      console.log("newTable: ", newTable);
-      console.log("newTable id: ", newTable.id);
       setTablesAmount(tablesAmount + 1);
     } else {
       let amountTablesAdded = 0;
       const lastTable = numberOfTables - 1;
-      console.log("amountTablesAdded: ", amountTablesAdded);
       const lastId = tableList[lastTable].id;
-      //console.log("lastid: ", lastId);
       let nextId = lastId + 1;
-      //console.log("nextId: ", nextId);
       for (let i = 0; i < amount; i++) {
         const newTable: Table = { id: nextId, ocupped: true };
         set(newTableRef, {
           id: newTable.id,
           ocupped: newTable.ocupped,
         });
-        console.log("al NO estar vacia la lista entro aca: ", newTable);
-        console.log("newTable: ", newTable);
-        console.log("newTable id: ", newTable.id);
         nextId++;
         amountTablesAdded++;
-        console.log("amountTablesAdded: ", amountTablesAdded);
         setTablesAmount(tablesAmount + amountTablesAdded);
-        setTableIds([...tableIds, newTable.id]);
         setTables([...tables, newTable]);
-        //console.log("nextId after a loop: ", nextId);
       }
     }
   };
 
   useEffect(() => {
     getTableList();
-  }, [load]);
-  console.log("tableIds: ", tableIds);
-  console.log("tables: ", tables);
+  }, [tablesAmount]);
 
   return (
     <div className="container mx-auto px-4">
