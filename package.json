@@ -11,7 +11,7 @@
     "commit": "git-cz"
   },
   "dependencies": {
-    "@headlessui/react": "^0.0.0-insiders.076b03c",
+    "@headlessui/react": "^0.0.0-insiders.8e93cd0",
     "@heroicons/react": "^2.0.18",
     "firebase": "^10.0.0",
     "git-cz": "^4.9.0",
