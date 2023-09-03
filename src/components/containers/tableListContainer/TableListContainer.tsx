@@ -22,7 +22,6 @@ export const TableListContainer = () => {
   //const [tableList, setTableList] = useState<Array<Table>>(list);
   const [tables, setTables] = useState<Array<Table>>([]);
   const [load, setLoad] = useState(false);
-  const [tablesAmount, setTablesAmount] = useState(0);
 
   const getTableList = async () => {
     setLoad(true);
@@ -32,7 +31,6 @@ export const TableListContainer = () => {
       if (db) {
         const tableListRef = await ref(db, "tablesMock");
         if (!tableListRef) {
-          setTablesAmount(0);
           setLoad(false);
         } else {
           onValue(
@@ -71,7 +69,6 @@ export const TableListContainer = () => {
         ocupped: newTable.ocupped,
       });
       setTables([...tables, newTable]);
-      setTablesAmount(tablesAmount + 1);
     } else {
       let amountTablesAdded = 0;
       const lastTable = numberOfTables - 1;
@@ -85,7 +82,6 @@ export const TableListContainer = () => {
         });
         nextId++;
         amountTablesAdded++;
-        setTablesAmount(tablesAmount + amountTablesAdded);
         setTables([...tables, newTable]);
       }
     }
@@ -97,7 +93,6 @@ export const TableListContainer = () => {
     const postListRef = ref(db, "tablesMock");
     remove(postListRef)
       .then(() => {
-        setTablesAmount(0);
         setTables([]);
         console.log("Lista de tablas eliminada correctamente");
       })
@@ -108,7 +103,7 @@ export const TableListContainer = () => {
 
   useEffect(() => {
     getTableList();
-  }, [tablesAmount]);
+  }, []);
 
   return (
     <div className="container mx-auto px-4">
