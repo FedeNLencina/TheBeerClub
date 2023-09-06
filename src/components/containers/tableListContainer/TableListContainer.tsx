@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/await-thenable */
 /* eslint-disable @typescript-eslint/no-floating-promises */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
@@ -16,16 +17,19 @@ import {
   push,
   onValue,
   remove,
+  onChildAdded,
 } from "firebase/database";
 
 export const TableListContainer = () => {
   //const [tableList, setTableList] = useState<Array<Table>>(list);
   const [tables, setTables] = useState<Array<Table>>([]);
   const [load, setLoad] = useState(false);
+  const [databaseListKeys, setDatabaseListKeys] = useState<Array<string>>([]);
 
   const getTableList = async () => {
     setLoad(true);
     const newTableList: Table[] = [];
+    const newDatabaseKeyList: string[] = [];
     try {
       const db = await getDatabase();
       if (db) {
@@ -37,10 +41,13 @@ export const TableListContainer = () => {
             tableListRef,
             (snapshot) => {
               snapshot.forEach((childSnapshot) => {
+                const childKey = childSnapshot.key;
                 const childData: Table = childSnapshot.val();
                 const newTable: Table = childData;
                 newTableList.push(newTable);
+                newDatabaseKeyList.push(childKey);
                 setTables([...newTableList]);
+                setDatabaseListKeys([...newDatabaseKeyList]);
               });
             },
             {
@@ -63,22 +70,35 @@ export const TableListContainer = () => {
     const newTableRef = push(postListRef);
     const numberOfTables = tableList.length;
     if (numberOfTables <= 0) {
-      const newTable: Table = { id: 1, ocupped: true };
+      const newTable: Table = { id: "", number: 1, ocupped: true };
       set(newTableRef, {
-        id: newTable.id,
+        number: newTable.number,
         ocupped: newTable.ocupped,
       });
-      setTables([...tables, newTable]);
+      onChildAdded(postListRef, (data) => {
+        const newKey = data.key;
+        console.log("newkey", newKey);
+        newTable.id = newKey;
+        setTables([...tables, newTable]);
+        if (newKey) setDatabaseListKeys([...databaseListKeys, newKey]);
+      });
     } else {
       let amountTablesAdded = 0;
       const lastTable = numberOfTables - 1;
-      const lastId = tableList[lastTable].id;
+      const lastId = tableList[lastTable].number;
       let nextId = lastId + 1;
       for (let i = 0; i < amount; i++) {
-        const newTable: Table = { id: nextId, ocupped: true };
+        const newTable: Table = { id: "", number: nextId, ocupped: true };
         set(newTableRef, {
-          id: newTable.id,
+          number: newTable.number,
           ocupped: newTable.ocupped,
+        });
+        onChildAdded(postListRef, (data) => {
+          const newKey = data.key;
+          console.log("newkey", newKey);
+          newTable.id = newKey;
+          setTables([...tables, newTable]);
+          if (newKey) setDatabaseListKeys([...databaseListKeys, newKey]);
         });
         nextId++;
         amountTablesAdded++;

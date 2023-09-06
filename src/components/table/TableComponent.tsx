@@ -23,7 +23,7 @@ export const TableComponent = ({ table, iconUrl }: TableProps) => {
     setModalOpen(false);
   };
 
-  const removeTables = () => {
+  const removeTable = () => {
     const db = getDatabase();
     // referencio a la lista en la base de datos
     const postListRef = ref(db, "tablesMock");
