@@ -8,10 +8,11 @@ import { Table } from "../../../utils/interfaces/tables/tables";
 import tableIcon from "../../../assets/icons/table.svg";
 
 interface TableListProps {
+  listOfKeys?: string[];
   listOfTables?: Table[];
 }
 
-export const TableList = ({ listOfTables }: TableListProps) => {
+export const TableList = ({ listOfTables, listOfKeys }: TableListProps) => {
   return (
     <div className="flex flex-row justify-start items-center">
       <div className="grid grid-cols-12 gap-4">
@@ -20,7 +21,7 @@ export const TableList = ({ listOfTables }: TableListProps) => {
             console.log("table id in table list: ", table.id);
             return (
               <TableComponent
-                key={table.id}
+                key={table.number}
                 table={table}
                 iconUrl={tableIcon}
               />
