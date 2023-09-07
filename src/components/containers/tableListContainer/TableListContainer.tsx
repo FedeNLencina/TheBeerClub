@@ -44,6 +44,7 @@ export const TableListContainer = () => {
                 const childKey = childSnapshot.key;
                 const childData: Table = childSnapshot.val();
                 const newTable: Table = childData;
+                newTable.id = childKey;
                 newTableList.push(newTable);
                 newDatabaseKeyList.push(childKey);
                 setTables([...newTableList]);
@@ -75,13 +76,9 @@ export const TableListContainer = () => {
         number: newTable.number,
         ocupped: newTable.ocupped,
       });
-      onChildAdded(postListRef, (data) => {
-        const newKey = data.key;
-        console.log("newkey", newKey);
-        newTable.id = newKey;
-        setTables([...tables, newTable]);
-        if (newKey) setDatabaseListKeys([...databaseListKeys, newKey]);
-      });
+      console.log("table added: ", newTable);
+      setTables([...tables, newTable]);
+      console.log("tables: ", tables);
     } else {
       let amountTablesAdded = 0;
       const lastTable = numberOfTables - 1;
@@ -93,16 +90,11 @@ export const TableListContainer = () => {
           number: newTable.number,
           ocupped: newTable.ocupped,
         });
-        onChildAdded(postListRef, (data) => {
-          const newKey = data.key;
-          console.log("newkey", newKey);
-          newTable.id = newKey;
-          setTables([...tables, newTable]);
-          if (newKey) setDatabaseListKeys([...databaseListKeys, newKey]);
-        });
+        console.log("table added: ", newTable);
         nextId++;
         amountTablesAdded++;
         setTables([...tables, newTable]);
+        console.log("tables: ", tables);
       }
     }
   };

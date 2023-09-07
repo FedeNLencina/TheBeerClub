@@ -23,17 +23,19 @@ export const TableComponent = ({ table, iconUrl }: TableProps) => {
     setModalOpen(false);
   };
 
-  const removeTable = () => {
+  const removeTable = (id: string | undefined) => {
     const db = getDatabase();
     // referencio a la lista en la base de datos
-    const postListRef = ref(db, "tablesMock");
-    remove(postListRef)
-      .then(() => {
-        console.log("Lista de tablas eliminada correctamente");
-      })
-      .catch((error) => {
-        console.error("Error al eliminar la lista de tablas:", error);
-      });
+    if (id) {
+      const postListRef = ref(db, "tablesMock" + id);
+      remove(postListRef)
+        .then(() => {
+          console.log("Lista de tablas eliminada correctamente");
+        })
+        .catch((error) => {
+          console.error("Error al eliminar la lista de tablas:", error);
+        });
+    }
   };
 
   return (
@@ -105,6 +107,15 @@ export const TableComponent = ({ table, iconUrl }: TableProps) => {
                         >
                           Got it, thanks!
                         </button>
+                        {table.id && (
+                          <button
+                            type="button"
+                            className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                            onClick={() => removeTable(table.id)}
+                          >
+                            Remove table
+                          </button>
+                        )}
                       </div>
                     </Dialog.Panel>
                   </Transition.Child>
