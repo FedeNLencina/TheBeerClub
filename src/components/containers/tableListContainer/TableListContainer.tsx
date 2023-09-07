@@ -15,6 +15,7 @@ import {
   get,
   push,
   onValue,
+  remove,
 } from "firebase/database";
 
 export const TableListContainer = () => {
@@ -60,7 +61,7 @@ export const TableListContainer = () => {
     const db = getDatabase();
     // referencio a la lista en la base de datos
     const postListRef = ref(db, "tablesMock");
-    //agrego un nuevo elementos a esa lista (lo referencio asi al elemento y en el set le agrego las props.)
+    //agrego un nuevo elemento a esa lista (lo referencio asi al elemento y en el set le agrego las props.)
     const newTableRef = push(postListRef);
     const numberOfTables = tableList.length;
     if (numberOfTables <= 0) {
@@ -90,6 +91,21 @@ export const TableListContainer = () => {
     }
   };
 
+  const removeTables = () => {
+    const db = getDatabase();
+    // referencio a la lista en la base de datos
+    const postListRef = ref(db, "tablesMock");
+    remove(postListRef)
+      .then(() => {
+        setTablesAmount(0);
+        setTables([]);
+        console.log("Lista de tablas eliminada correctamente");
+      })
+      .catch((error) => {
+        console.error("Error al eliminar la lista de tablas:", error);
+      });
+  };
+
   useEffect(() => {
     getTableList();
   }, [tablesAmount]);
@@ -107,6 +123,8 @@ export const TableListContainer = () => {
         <>
           <TableList listOfTables={tables} />
           <button onClick={() => addTables(1, tables)}>addtables</button>
+          <br></br>
+          <button onClick={() => removeTables()}>remove Tables</button>
         </>
       )}
     </div>
