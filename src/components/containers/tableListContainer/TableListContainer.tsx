@@ -45,6 +45,8 @@ export const TableListContainer = () => {
                 const childData: Table = childSnapshot.val();
                 const newTable: Table = childData;
                 newTable.id = childKey;
+                console.log("table: ", newTable);
+                console.log("table id: ", newTable.id);
                 newTableList.push(newTable);
                 newDatabaseKeyList.push(childKey);
                 setTables([...newTableList]);

@@ -27,10 +27,11 @@ export const TableComponent = ({ table, iconUrl }: TableProps) => {
     const db = getDatabase();
     // referencio a la lista en la base de datos
     if (id) {
-      const postListRef = ref(db, "tablesMock" + id);
+      const postListRef = ref(db, "tablesMock/" + id);
       remove(postListRef)
         .then(() => {
           console.log("Lista de tablas eliminada correctamente");
+          setModalOpen(false);
         })
         .catch((error) => {
           console.error("Error al eliminar la lista de tablas:", error);
