@@ -7,7 +7,11 @@ interface TableProviderProps {
 }
 
 export const TableProvider = ({ children }: TableProviderProps) => {
-  const [tables, setTables] = useState<Array<Table>>([]);
+  const [amountOfTables, setAmountOfTables] = useState<number>(0);
 
-  return <TableContext.Provider value={{}}>{children}</TableContext.Provider>;
+  return (
+    <TableContext.Provider value={{ amountOfTables, setAmountOfTables }}>
+      {children}
+    </TableContext.Provider>
+  );
 };

@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { useState, Fragment } from "react";
+import React, { useState, Fragment, useEffect, useContext } from "react";
 import { Table } from "../../utils/interfaces/tables/tables";
 import greenCircle from "../../assets/icons/greencircle.svg";
 import redCircle from "../../assets/icons/redcircle.svg";
 import { Dialog, Transition } from "@headlessui/react";
 import { getDatabase, ref, onValue, remove } from "firebase/database";
+import { TableContext } from "../../context/TableContext";
 
 interface TableProps {
   table?: Table;
@@ -13,7 +14,7 @@ interface TableProps {
 
 export const TableComponent = ({ table, iconUrl }: TableProps) => {
   const [modalOpen, setModalOpen] = useState(false);
-  //console.log("Table state: ", table?.open);
+  const { amountOfTables, setAmountOfTables } = useContext(TableContext);
 
   const openModal = () => {
     setModalOpen(true);
@@ -23,25 +24,30 @@ export const TableComponent = ({ table, iconUrl }: TableProps) => {
     setModalOpen(false);
   };
 
-  const removeTable = (id: string | undefined) => {
+  const removeTable = (id: string) => {
     const db = getDatabase();
     // referencio a la lista en la base de datos
     if (id) {
       const postListRef = ref(db, "tablesMock/" + id);
       remove(postListRef)
         .then(() => {
-          console.log("Lista de tablas eliminada correctamente");
+          setAmountOfTables(amountOfTables - 1);
+          console.log("table eliminada correctamente");
           setModalOpen(false);
         })
         .catch((error) => {
-          console.error("Error al eliminar la lista de tablas:", error);
+          console.error("Error al eliminar la table:", error);
         });
     }
   };
 
+  useEffect(() => {
+    console.log("table id passed to table component: ", table?.id);
+  }, []);
+
   return (
     <div>
-      {table && (
+      {table?.id && (
         <div className="relative">
           <button onClick={openModal}>
             <img src={iconUrl} alt="mesa" />

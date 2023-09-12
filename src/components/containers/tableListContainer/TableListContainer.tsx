@@ -1,30 +1,31 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/restrict-plus-operands */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/await-thenable */
 /* eslint-disable @typescript-eslint/no-floating-promises */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { list } from "../../../servicies/tableList";
 import { Table } from "../../../utils/interfaces/tables/tables";
 import { TableList } from "../../lists/tableList/TableList";
-import { collection, addDoc, snapshotEqual } from "firebase/firestore";
 import {
   getDatabase,
   ref,
   set,
-  child,
-  get,
   push,
   onValue,
   remove,
-  onChildAdded,
 } from "firebase/database";
+
+import { TableContext } from "../../../context/TableContext";
 
 export const TableListContainer = () => {
   //const [tableList, setTableList] = useState<Array<Table>>(list);
   const [tables, setTables] = useState<Array<Table>>([]);
   const [load, setLoad] = useState(false);
   const [databaseListKeys, setDatabaseListKeys] = useState<Array<string>>([]);
+  const { amountOfTables, setAmountOfTables } = useContext(TableContext);
 
   const getTableList = async () => {
     setLoad(true);
@@ -45,8 +46,6 @@ export const TableListContainer = () => {
                 const childData: Table = childSnapshot.val();
                 const newTable: Table = childData;
                 newTable.id = childKey;
-                console.log("table: ", newTable);
-                console.log("table id: ", newTable.id);
                 newTableList.push(newTable);
                 newDatabaseKeyList.push(childKey);
                 setTables([...newTableList]);
@@ -78,11 +77,9 @@ export const TableListContainer = () => {
         number: newTable.number,
         ocupped: newTable.ocupped,
       });
-      console.log("table added: ", newTable);
       setTables([...tables, newTable]);
-      console.log("tables: ", tables);
+      setAmountOfTables(amountOfTables + 1);
     } else {
-      let amountTablesAdded = 0;
       const lastTable = numberOfTables - 1;
       const lastId = tableList[lastTable].number;
       let nextId = lastId + 1;
@@ -92,11 +89,9 @@ export const TableListContainer = () => {
           number: newTable.number,
           ocupped: newTable.ocupped,
         });
-        console.log("table added: ", newTable);
         nextId++;
-        amountTablesAdded++;
         setTables([...tables, newTable]);
-        console.log("tables: ", tables);
+        setAmountOfTables(amountOfTables + 1);
       }
     }
   };
@@ -117,7 +112,7 @@ export const TableListContainer = () => {
 
   useEffect(() => {
     getTableList();
-  }, []);
+  }, [amountOfTables]);
 
   return (
     <div className="container mx-auto px-4">
